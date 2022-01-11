@@ -10,7 +10,6 @@ from .models import Employee
 def front(request):
     context = {
         }
-
     return render(request, "index.html", context)
 
 @api_view(['GET', 'POST'])
