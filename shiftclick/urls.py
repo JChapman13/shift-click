@@ -19,7 +19,7 @@ from core.views import front, employee, employee_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', front, name="front"),
+    path('', front, name="front"),
     path('employees/', employee, name="employee"),
     path('employees/<int:pk>/', employee_detail, name="detail")
 ]

@@ -14,7 +14,6 @@ def front(request):
 
 @api_view(['GET', 'POST'])
 def employee(request):
-
     if request.method == 'GET':
         employee = Employee.objects.all()
         serializer = EmployeeSerializer(employee, many=True)
@@ -22,9 +21,11 @@ def employee(request):
 
     elif request.method == 'POST':
         serializer = EmployeeSerializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
