@@ -1,150 +1,54 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import CreateEmployeePage from "../CreateEmployeePage/CreateEmployeePage";
 
-function EmployeePage() {
-  const [employees, setEmployees] = useState([]);
-  const [formEmployee, setFormEmployee] = useState({
-    name: "",
-    surname: "",
-    phoneNumber: "",
-    email: "",
-    address: "",
-    position: "",
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
+function EmployeePage(props) {
   useEffect(() => {
-    getEmployees();
-    console.log(employees);
+    props.getEmployees();
+    console.log(props.employees);
   }, []);
 
-  function getEmployees() {
-    axios({
-      method: "GET",
-      url: "/employees/",
-    })
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
-        setEmployees(data);
-        console.log(isLoading);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-          setIsLoading(false);
-        }
-      });
-  }
-
-  function createEmployee(event) {
-    event.preventDefault();
-    axios({
-      method: "POST",
-      url: "/employees/",
-      data: {
-        name: formEmployee.name,
-        surname: formEmployee.surname,
-        phone_number: formEmployee.phoneNumber,
-        email: formEmployee.email,
-        address: formEmployee.address,
-        position: formEmployee.position,
-      },
-    }).then((response) => {
-      getEmployees();
-    });
-
-    setFormEmployee({
-      name: "",
-      surname: "",
-      phoneNumber: "",
-      email: "",
-      address: "",
-      position: "",
-    });
-  }
-
-  function deleteEmployee(id) {
+  function deleteEmployee(e) {
+    console.log(e.id);
     axios({
       method: "DELETE",
-      url: `/employees/${id}/`,
+      url: `/employees/${e}/`,
     }).then((response) => {
-      getEmployees();
+      props.getEmployees();
     });
   }
 
-  function handleChange(event) {
-    const { value, name } = event.target;
-    setFormEmployee((prevEmployee) => ({
-      ...prevEmployee,
-      [name]: value,
-    }));
-  }
-
-  if (isLoading) {
+  if (props.isLoading) {
     return <div className="App">Loading...</div>;
   }
   return (
     <>
-      <form className="create-employee">
-        <input
-          onChange={handleChange}
-          text={formEmployee.name}
-          name="name"
-          placeholder="Name"
-          value={formEmployee.name}
-        />
-        <input
-          onChange={handleChange}
-          text={formEmployee.surname}
-          name="surname"
-          placeholder="Surname"
-          value={formEmployee.surname}
-        />
-        <input
-          onChange={handleChange}
-          text={formEmployee.phoneNumber}
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formEmployee.phoneNumber}
-        />
-        <input
-          onChange={handleChange}
-          text={formEmployee.email}
-          name="email"
-          placeholder="Email"
-          value={formEmployee.email}
-        />
-        <input
-          onChange={handleChange}
-          text={formEmployee.address}
-          name="address"
-          placeholder="Address"
-          value={formEmployee.address}
-        />
-        <input
-          onChange={handleChange}
-          text={formEmployee.position}
-          name="position"
-          placeholder="Position"
-          value={formEmployee.position}
-        />
-        <button onClick={createEmployee}>Create Employee</button>
-      </form>
+      <CreateEmployeePage />
       <h3>Employee List</h3>
-      {employees.map((e) => {
+      {props.employees.map((e) => {
         return [
-          <li>
-            {e.name}
-            {e.surname}
-            {e.phoneNumber}
-            {e.email}
-            {e.address}
-            {e.position}
-          </li>,
+          <p>
+            Name: {e.name}
+            <br />
+            Surname: {e.surname}
+            <br />
+            Phone Number: {e.phoneNumber}
+            <br />
+            Email: {e.email}
+            <br />
+            Address: {e.address}
+            <br />
+            Position: {e.position}
+            <br />
+            <Button
+              variant="outlined"
+              id={e.id}
+              onClick={() => deleteEmployee(e.id)}
+            >
+              Delete
+            </Button>
+          </p>,
         ];
       })}
     </>

@@ -21,7 +21,7 @@ def employee(request):
 
     elif request.method == 'POST':
         serializer = EmployeeSerializer(data=request.data)
-        print(serializer)
+        print("check")
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
